@@ -14,6 +14,7 @@ import { ContactPage } from './pages/ContactPage';
 import { LoginPage } from './pages/LoginPage';
 import { AdminDashboard } from './pages/AdminDashboard';
 import { LegalPages } from './pages/LegalPages';
+import { DownloadAccessPage } from './pages/DownloadAccessPage';
 
 function MainApp() {
   const [currentTab, setCurrentTab] = useState<string>('home');
@@ -24,7 +25,24 @@ function MainApp() {
   useEffect(() => {
     const handleHash = () => {
       const hash = window.location.hash.replace('#', '');
-      if (hash && ['home', 'projects', 'products', 'books', 'courses', 'announcements', 'about', 'contact', 'login', 'admin', 'terms', 'privacy'].includes(hash)) {
+      if (
+        hash &&
+        [
+          'home',
+          'projects',
+          'products',
+          'books',
+          'courses',
+          'announcements',
+          'download',
+          'about',
+          'contact',
+          'login',
+          'admin',
+          'terms',
+          'privacy',
+        ].includes(hash)
+      ) {
         setCurrentTab(hash);
       }
     };
@@ -70,6 +88,9 @@ function MainApp() {
         {currentTab === 'announcements' && (
           <AnnouncementsPage setCurrentTab={handleTabChange} />
         )}
+        {currentTab === 'download' && (
+          <DownloadAccessPage setCurrentTab={handleTabChange} />
+        )}
         {currentTab === 'about' && (
           <AboutPage setCurrentTab={handleTabChange} />
         )}
@@ -111,10 +132,12 @@ function MainApp() {
   );
 }
 
-export default function App() {
+export function App() {
   return (
     <AppProvider>
       <MainApp />
     </AppProvider>
   );
 }
+
+export default App;

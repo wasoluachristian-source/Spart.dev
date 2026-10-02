@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import { useApp } from '../context/AppContext';
 import { Book } from '../types';
-import { BookOpen, CheckCircle, Download, ExternalLink, Mail, ShieldCheck, Star } from 'lucide-react';
+import { BookOpen, CheckCircle, Download, ExternalLink, Mail, ShieldCheck, Star, Sparkles } from 'lucide-react';
+import { SecureCheckoutModal } from '../components/SecureCheckoutModal';
 
 interface BooksPageProps {
   setCurrentTab: (tab: string) => void;
@@ -9,7 +10,7 @@ interface BooksPageProps {
 
 export const BooksPage: React.FC<BooksPageProps> = ({ setCurrentTab }) => {
   const { books } = useApp();
-  const [selectedBook, setSelectedBook] = useState<Book | null>(null);
+  const [selectedBookForPurchase, setSelectedBookForPurchase] = useState<Book | null>(null);
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12 space-y-12">
@@ -25,6 +26,17 @@ export const BooksPage: React.FC<BooksPageProps> = ({ setCurrentTab }) => {
         <p className="text-slate-300 text-base sm:text-lg leading-relaxed">
           Des ouvrages complets, documentés et pratiques pour structurer vos connaissances logicielles et progresser en développement web et architecture.
         </p>
+
+        {/* Quick link to download already purchased book */}
+        <div className="pt-2 flex justify-center">
+          <button
+            onClick={() => setCurrentTab('download')}
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-xl bg-slate-900 border border-cyan-800/50 text-cyan-300 hover:text-white text-xs font-semibold hover:border-cyan-500 transition shadow-sm"
+          >
+            <Download className="w-3.5 h-3.5 text-cyan-400" />
+            <span>Déjà acheté ? Entrer mon code unique de téléchargement</span>
+          </button>
+        </div>
       </div>
 
       {/* Grid */}
@@ -71,16 +83,16 @@ export const BooksPage: React.FC<BooksPageProps> = ({ setCurrentTab }) => {
               {/* Actions */}
               <div className="pt-4 border-t border-slate-800/80 flex flex-wrap items-center gap-3">
                 <button
-                  onClick={() => setCurrentTab('contact')}
-                  className="flex-1 py-2.5 px-4 rounded-xl text-xs font-bold bg-cyan-500 hover:bg-cyan-400 text-slate-950 transition flex items-center justify-center gap-1.5"
+                  onClick={() => setSelectedBookForPurchase(book)}
+                  className="flex-1 py-3 px-4 rounded-xl text-xs font-bold bg-gradient-to-r from-cyan-600 via-sky-600 to-indigo-600 hover:from-cyan-500 hover:to-indigo-500 text-white transition flex items-center justify-center gap-2 shadow-lg shadow-cyan-950 cursor-pointer"
                 >
-                  <Download className="w-3.5 h-3.5" />
-                  <span>Acheter ({book.price} €)</span>
+                  <Sparkles className="w-3.5 h-3.5" />
+                  <span>Acheter &amp; Obtenir le Code ({book.price} €)</span>
                 </button>
 
                 <button
                   onClick={() => setCurrentTab('contact')}
-                  className="py-2.5 px-3 rounded-xl text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 transition"
+                  className="py-3 px-3 rounded-xl text-xs font-medium bg-slate-800 hover:bg-slate-700 text-slate-200 transition"
                   title="Poser une question"
                 >
                   <Mail className="w-3.5 h-3.5" />
@@ -90,6 +102,22 @@ export const BooksPage: React.FC<BooksPageProps> = ({ setCurrentTab }) => {
           </div>
         ))}
       </div>
+
+      {/* Secure Checkout Modal */}
+      {selectedBookForPurchase && (
+        <SecureCheckoutModal
+          isOpen={!!selectedBookForPurchase}
+          onClose={() => setSelectedBookForPurchase(null)}
+          item={{
+            id: selectedBookForPurchase.id,
+            title: selectedBookForPurchase.title,
+            price: selectedBookForPurchase.price,
+            type: 'book',
+            deliverableUrl: selectedBookForPurchase.fileOrUrl,
+            deliverableName: selectedBookForPurchase.fileName || `${selectedBookForPurchase.title}.pdf`,
+          }}
+        />
+      )}
     </div>
   );
 };

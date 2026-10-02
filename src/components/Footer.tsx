@@ -147,6 +147,14 @@ export const Footer: React.FC<FooterProps> = ({ setCurrentTab, openSubscribeModa
               </li>
               <li>
                 <button
+                  onClick={() => handleNav('download')}
+                  className="hover:text-cyan-400 transition text-cyan-300 font-medium"
+                >
+                  Télécharger avec code unique
+                </button>
+              </li>
+              <li>
+                <button
                   onClick={() => handleNav('terms')}
                   className="hover:text-cyan-400 transition"
                 >
